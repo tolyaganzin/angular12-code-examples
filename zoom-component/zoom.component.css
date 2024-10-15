@@ -1,0 +1,19 @@
+.wrapper{
+  position: relative;
+  touch-action: none;
+  overflow: hidden;
+  width: 100%;
+  height: calc(100dvh - 50px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  max-height: calc(100dvh - 50px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.move-zoom {
+  user-select: none;
+  touch-action: none;
+  transform-origin: 0 0;
+  -webkit-tap-hightlight-color: transparent;
+  display: flex;
+}
