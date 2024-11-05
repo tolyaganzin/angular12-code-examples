@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, Renderer2, Output, EventEmitter, OnDestroy, NgZone, ViewChild } from '@angular/core';
 import * as bowser from 'bowser';
-import { AssetInfoPopupStateService } from 'app/services/asset-info-popup-state.service';
-import { SidebarService } from 'app/services/sidebar.service';
+import { AssetInfoPopupStateService } from '../services/asset-info-popup-state.service';
+import { SidebarService } from '../services/sidebar.service';
 import { skip, tap } from 'rxjs/operators';
 
 @Component({
@@ -175,7 +175,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
         const newScale: number = +(Math.floor(this.calculateScaledDimensions(parentElement, wrapper) / 0.1) * 0.1).toFixed(2);
         const percentToScale: number = Math.floor((this.transFormScaleToPercent(newScale) - 100) / 10) * 10
         if (percentToScale >= 10 || percentToScale < 1) {
-          this.zoom(true, null, null, percentToScale)
+          this.zoom(true, null, undefined, percentToScale)
           this.scale = newScale;
         }
       }
@@ -350,12 +350,12 @@ export class ZoomComponent implements OnInit, OnDestroy {
 
   increaseZoom(percent: number = 0){
     this.closeOpenedOverlays();
-    this.zoom(true, null, null, percent)
+    this.zoom(true, null, undefined, percent)
   }
 
   decreaseZoom(percent: number = 0){
     this.closeOpenedOverlays();
-    this.zoom(false, null,  null, percent)
+    this.zoom(false, null,  undefined, percent)
   }
 
   // Update posistion and zoom
