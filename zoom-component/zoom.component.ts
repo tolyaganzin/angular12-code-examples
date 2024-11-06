@@ -137,7 +137,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  // use for calc image size for fit it into container
   private calculateScaledDimensions(container: HTMLElement, child: HTMLElement): number {
     let {clientHeight: parentHeight, clientWidth: parentWidth} = container;
     let {clientWidth: childWidth} = child;
@@ -161,15 +161,8 @@ export class ZoomComponent implements OnInit, OnDestroy {
       this.initialTop = this.transformTop;
       this.initialLeft = this.transformLeft;
       const imgHeight: number = (wrapper as HTMLElement).getElementsByTagName('img')[0].clientHeight;
-      // this.zoomValueChanged.emit(this.transFormScaleToPercent(this.scale))
-      // if (parentElement.clientHeight < wrapper.clientHeight && imgHeight) {
-      //   const tmpCounter = Math.round((parentElement.clientHeight / wrapper.clientHeight)*100)/100;
-      //   this.elementRef.nativeElement.children[0].children[0].style.width = wrapper.clientWidth * tmpCounter + "px";
-      //   // this.elementRef.nativeElement.children[0].children[0].style.width = 100 * tmpCounter + "%";
-      //   // this.elementRef.nativeElement.children[0].children[0].style.maxWidth = 100 * tmpCounter + "%";
-      // }
 
-       // this block of code for the scale of image map, for example is too small image then we should increase image
+      // this block of code for the scale of image map, for example is too small image then we should increase image
       // for the cover of available space of map or to decrease img if is too big img
       if (imgHeight && !this.isTabletOrMobile) {
         const newScale: number = +(Math.floor(this.calculateScaledDimensions(parentElement, wrapper) / 0.1) * 0.1).toFixed(2);
@@ -212,7 +205,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
     }
     setToDefault();
   }
-
+  // control popups
   closeOpenedOverlays(): void {
     if (this.assetInfoPopupStateService.openState) {
         this.assetInfoPopupStateService.setOpenState(false);
@@ -224,7 +217,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
     this.isScaling = true;
     this.zoomSize = this.diffZoom(e)
   }
-  private diffZoom (e) {
+  private diffZoom (e) { //use for check a distance
     return Math.hypot(
       e.touches[0].pageX - e.touches[1].pageX,
       e.touches[0].pageY - e.touches[1].pageY
@@ -274,7 +267,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
     this.clickTouchEnd.emit(event)
   }
 
-  //Calc zoom and pan data
+  // Calc zoom and pan data
   private clamp(value: number, min: number, max: number): number {
     return Math.min(Math.max(value, min), max);
   }
@@ -284,6 +277,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
   // event area to zoom in/out mouse/touch position
   // newscale set new scale (if this is set zoomIn not checking)
   zoom(zoomIn: boolean, event: any, newscale?: number, increaseByPercent: number = 0): void {
+    // get data for calc
     increaseByPercent = increaseByPercent / 100;
     let clientX = 0;
     let clientY = 0;
@@ -298,8 +292,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
     }
     const left = (clientX - this.initialLeft) / this.scale;
     const top = (clientY - this.initialTop) / this.scale;
-
-    // this.scaleFactor = bowser.mac ? (this.scale > 2.2 ? 0.04 : this.scale < 1.1 ? 0.008 : 0.015) : 0.1;
+    // calc step for os
     if(bowser.mac) {
       this.scaleFactor = this.scale > 2.2 ? 0.04 : this.scale < 1.1 ? 0.008 : 0.015
     }
@@ -317,20 +310,22 @@ export class ZoomComponent implements OnInit, OnDestroy {
     } else {
       this.scale = newscale;
     }
+    // calc
     this.scale = Math.min(Math.max(0.4, this.scale), 5.0); // Minimum scale of 0.4 max 5.0 to prevent inverted content
     this.initialLeft = clientX - left * this.scale;
     this.initialTop = clientY - top * this.scale;
     this.isFirstTime = false;
+    // update data
     this.updateTransform();
     this.zoomValueChanged.emit(this.transFormScaleToPercent(this.scale))
     this.zoomChange.emit(event)
   }
-
+  // convert scale prop of css to % for display it and use at output zoomValueChanged
   public transFormScaleToPercent(scale: number){
     const percentage = Math.round(scale * 100);
     return Math.trunc(percentage);
   }
-
+  // get area limits for max possible pan item position
   private getPanContainerAndLimits(): any {
     const wrapper = this.elementRef.nativeElement.children[0].children[0];
     const parentElement = wrapper;
@@ -347,7 +342,7 @@ export class ZoomComponent implements OnInit, OnDestroy {
       maxYmove: maxYmove
     }
   }
-
+  // set +/- zoom
   increaseZoom(percent: number = 0){
     this.closeOpenedOverlays();
     this.zoom(true, null, undefined, percent)
